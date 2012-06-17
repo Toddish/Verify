@@ -60,12 +60,12 @@ More information on relationships can be found in the [Laravel Eloquent docs](ht
 #### retrieve($user_id):object|null  
 *Retrieves a user via their ID*
 
-    $user = Verify::retrieve($user_id);
+    $user = Auth::retrieve($user_id);
 
 #### attempt($arguments = array()):boolean  
 *Attempts to log in a user*
 
-    $ok = Verify::attempt(array(
+    $ok = Auth::attempt(array(
         'username' => 'Todd',
         'password' => 'password',
         'remember' => true
@@ -81,8 +81,8 @@ The only real difference between this and the normal ```attempt``` Auth method, 
 #### is($roles, $user = NULL):boolean
 *Checks if a user is a certain role*
 
-    $ok = Verify::is(array('Super Admin', 'Admin');
-    $ok = Verify::is('Admin', $different_user);
+    $ok = Auth::is(array('Super Admin', 'Admin');
+    $ok = Auth::is('Admin', $different_user);
 
 If no user is passed, the currently logged in user is tested against.  
 If an array of Role names are a passed, the function returns true if **any one** of them is valid.
@@ -90,8 +90,8 @@ If an array of Role names are a passed, the function returns true if **any one**
 #### can($permissions, $user = NULL):boolean
 *Checks if a user has a certain permission*
 
-    $ok = Verify::can(array('create_users', 'delete_users');
-    $ok = Verify::can('create_users', $different_user);
+    $ok = Auth::can(array('create_users', 'delete_users');
+    $ok = Auth::can('create_users', $different_user);
 
 If no user is passed, the currently logged in user is tested against.  
 If an array of Permission names are a passed, the function returns true if **any one** of them is valid.  
@@ -100,9 +100,9 @@ If the user being tested against is a ```'Super Admin'```, as defined in the con
 #### level($level, $modifier = '>=', $user = NULL):boolean
 *Checks if a user is a certain level*
 
-    $ok = Verify::level(7); // Is the User level 7 or above
-    $ok = Verify::level(5, '<'); // Is the User below level 5
-    $ok = Verify::level(9, '<=', $different_user);
+    $ok = Auth::level(7); // Is the User level 7 or above
+    $ok = Auth::level(5, '<'); // Is the User below level 5
+    $ok = Auth::level(9, '<=', $different_user);
 
 If no user is passed, the currently logged in user is tested against.
 
