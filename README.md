@@ -2,7 +2,7 @@
 
 *A simple role/permission authentication bundle for Laravel*
 
-### Installation
+## Installation
 
 Run these commands on the CLI:
 
@@ -30,7 +30,7 @@ Then change your Auth driver to ``'verify'`` in ``application/config/auth.php``:
 
     'driver' => 'verify',
 
-### Usage
+## Usage
 
 The bundle is intentionally lightweight. You add Users, Roles and Permissions like any other Model.
 
@@ -55,14 +55,14 @@ They are added via the ORM, too:
 More information on relationships can be found in the [Laravel Eloquent docs](http://laravel.com/docs/database/eloquent).
 
 
-#### Public Functions
+### Public Functions
 
-##### retrieve($user_id):object|null  
+#### retrieve($user_id):object|null  
 *Retrieves a user via their ID*
 
     $user = Verify::retrieve($user_id);
 
-##### attempt($arguments = array()):boolean  
+#### attempt($arguments = array()):boolean  
 *Attempts to log in a user*
 
     $ok = Verify::attempt(array(
@@ -78,7 +78,7 @@ The only real difference between this and the normal ```attempt``` Auth method, 
 *UserDisabledException* - User has been disabled  
 *UserDeletedException* - User has been deleted
 
-##### is($roles, $user = NULL):boolean
+#### is($roles, $user = NULL):boolean
 *Checks if a user is a certain role*
 
     $ok = Verify::is(array('Super Admin', 'Admin');
@@ -87,7 +87,7 @@ The only real difference between this and the normal ```attempt``` Auth method, 
 If no user is passed, the currently logged in user is tested against.  
 If an array of Role names are a passed, the function returns true if **any one** of them is valid.
 
-##### can($permissions, $user = NULL):boolean
+#### can($permissions, $user = NULL):boolean
 *Checks if a user has a certain permission*
 
     $ok = Verify::can(array('create_users', 'delete_users');
@@ -97,7 +97,7 @@ If no user is passed, the currently logged in user is tested against.
 If an array of Permission names are a passed, the function returns true if **any one** of them is valid.  
 If the user being tested against is a ```'Super Admin'```, as defined in the config below, this method will always return true.
 
-##### level($level, $modifier = '>=', $user = NULL):boolean
+#### level($level, $modifier = '>=', $user = NULL):boolean
 *Checks if a user is a certain level*
 
     $ok = Verify::level(7); // Is the User level 7 or above
@@ -111,17 +111,17 @@ If no user is passed, the currently logged in user is tested against.
 A separate config file is provided to keep configuration separate from other Auth libraries.
 
 
-##### username
+#### username
 *A string or array of the database columns to authenticate against*  
 
     array('username', 'email')
 
-##### user_model
+#### user_model
 *The model to use for a User*  
 
     'Verify\Models\User'
 
-##### super_admin
+#### super_admin
 *The name of the super admin, who returns true on all permission checks*
 
     'Super Admin'
