@@ -5,6 +5,15 @@
  */
 class Verify extends \Laravel\Auth\Drivers\Driver
 {
+
+	public function __construct()
+	{
+		parent::__construct();
+
+		// Populate the user variable
+		$this->user();
+	}
+
 	/**
 	 * Get the current user of the application.
 	 *
