@@ -225,7 +225,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `salt` varchar(32) NOT NULL,
   `email` varchar(255) NOT NULL,
   `role_id` int(11) NOT NULL,
-  `confirmed` tinyint(4) NOT NULL,
+  `verified` tinyint(4) NOT NULL,
   `disabled` tinyint(4) NOT NULL,
   `deleted` tinyint(4) NOT NULL,
   `created_at` datetime NOT NULL,
@@ -246,7 +246,7 @@ CREATE PROCEDURE adminer_alter (INOUT alter_command text) BEGIN
 	DECLARE _extra varchar(30);
 	DECLARE _column_comment varchar(255);
 	DECLARE done, set_after bool DEFAULT 0;
-	DECLARE add_columns text DEFAULT ', ADD `id` int(11) NOT NULL auto_increment FIRST, ADD `username` varchar(30) COLLATE latin1_swedish_ci NOT NULL AFTER `id`, ADD `password` varchar(60) COLLATE latin1_swedish_ci NOT NULL AFTER `username`, ADD `salt` varchar(32) COLLATE latin1_swedish_ci NOT NULL AFTER `password`, ADD `email` varchar(255) COLLATE latin1_swedish_ci NOT NULL AFTER `salt`, ADD `role_id` int(11) NOT NULL AFTER `email`, ADD `confirmed` tinyint(4) NOT NULL AFTER `role_id`, ADD `disabled` tinyint(4) NOT NULL AFTER `confirmed`, ADD `deleted` tinyint(4) NOT NULL AFTER `disabled`, ADD `created_at` datetime NOT NULL AFTER `deleted`, ADD `updated_at` datetime NOT NULL AFTER `created_at`';
+	DECLARE add_columns text DEFAULT ', ADD `id` int(11) NOT NULL auto_increment FIRST, ADD `username` varchar(30) COLLATE latin1_swedish_ci NOT NULL AFTER `id`, ADD `password` varchar(60) COLLATE latin1_swedish_ci NOT NULL AFTER `username`, ADD `salt` varchar(32) COLLATE latin1_swedish_ci NOT NULL AFTER `password`, ADD `email` varchar(255) COLLATE latin1_swedish_ci NOT NULL AFTER `salt`, ADD `role_id` int(11) NOT NULL AFTER `email`, ADD `verified` tinyint(4) NOT NULL AFTER `role_id`, ADD `disabled` tinyint(4) NOT NULL AFTER `verified`, ADD `deleted` tinyint(4) NOT NULL AFTER `disabled`, ADD `created_at` datetime NOT NULL AFTER `deleted`, ADD `updated_at` datetime NOT NULL AFTER `created_at`';
 	DECLARE columns CURSOR FOR SELECT COLUMN_NAME, COLUMN_DEFAULT, IS_NULLABLE, COLLATION_NAME, COLUMN_TYPE, EXTRA, COLUMN_COMMENT FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'users' ORDER BY ORDINAL_POSITION;
 	DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
 	SET @alter_table = '';
@@ -280,14 +280,14 @@ CREATE PROCEDURE adminer_alter (INOUT alter_command text) BEGIN
 					SET add_columns = REPLACE(add_columns, ', ADD `role_id` int(11) NOT NULL AFTER `email`', IF(
 						_column_default <=> NULL AND _is_nullable = 'NO' AND _collation_name <=> NULL AND _column_type = 'int(11)' AND _extra = '' AND _column_comment = '' AND after = 'email'
 					, '', ', MODIFY `role_id` int(11) NOT NULL AFTER `email`'));
-				WHEN 'confirmed' THEN
-					SET add_columns = REPLACE(add_columns, ', ADD `confirmed` tinyint(4) NOT NULL AFTER `role_id`', IF(
+				WHEN 'verified' THEN
+					SET add_columns = REPLACE(add_columns, ', ADD `verified` tinyint(4) NOT NULL AFTER `role_id`', IF(
 						_column_default <=> NULL AND _is_nullable = 'NO' AND _collation_name <=> NULL AND _column_type = 'tinyint(4)' AND _extra = '' AND _column_comment = '' AND after = 'role_id'
-					, '', ', MODIFY `confirmed` tinyint(4) NOT NULL AFTER `role_id`'));
+					, '', ', MODIFY `verified` tinyint(4) NOT NULL AFTER `role_id`'));
 				WHEN 'disabled' THEN
-					SET add_columns = REPLACE(add_columns, ', ADD `disabled` tinyint(4) NOT NULL AFTER `confirmed`', IF(
-						_column_default <=> NULL AND _is_nullable = 'NO' AND _collation_name <=> NULL AND _column_type = 'tinyint(4)' AND _extra = '' AND _column_comment = '' AND after = 'confirmed'
-					, '', ', MODIFY `disabled` tinyint(4) NOT NULL AFTER `confirmed`'));
+					SET add_columns = REPLACE(add_columns, ', ADD `disabled` tinyint(4) NOT NULL AFTER `verified`', IF(
+						_column_default <=> NULL AND _is_nullable = 'NO' AND _collation_name <=> NULL AND _column_type = 'tinyint(4)' AND _extra = '' AND _column_comment = '' AND after = 'verified'
+					, '', ', MODIFY `disabled` tinyint(4) NOT NULL AFTER `verified`'));
 				WHEN 'deleted' THEN
 					SET add_columns = REPLACE(add_columns, ', ADD `deleted` tinyint(4) NOT NULL AFTER `disabled`', IF(
 						_column_default <=> NULL AND _is_nullable = 'NO' AND _collation_name <=> NULL AND _column_type = 'tinyint(4)' AND _extra = '' AND _column_comment = '' AND after = 'disabled'
@@ -318,7 +318,7 @@ DELIMITER ;
 CALL adminer_alter(@adminer_alter);
 DROP PROCEDURE adminer_alter;
 
-INSERT INTO `users` (`id`, `username`, `password`, `salt`, `email`, `role_id`, `confirmed`, `disabled`, `deleted`, `created_at`, `updated_at`) VALUES
+INSERT INTO `users` (`id`, `username`, `password`, `salt`, `email`, `role_id`, `verified`, `disabled`, `deleted`, `created_at`, `updated_at`) VALUES
 (1,	'admin',	'$2a$08$rqN6idpy0FwezH72fQcdqunbJp7GJVm8j94atsTOqCeuNvc3PzH3m',	'a227383075861e775d0af6281ea05a49',	'example@gmail.com',	1,	0,	0,	0,	'2012-06-17 21:59:01',	'0000-00-00 00:00:00');
 
 SELECT @adminer_alter;

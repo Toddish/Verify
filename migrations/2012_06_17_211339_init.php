@@ -40,7 +40,7 @@ class Verify_Init {
 			$table->string('salt', 32);
 			$table->string('email', 255)->index();
 			$table->integer('role_id')->index();
-			$table->boolean('confirmed');
+			$table->boolean('verified');
 			$table->boolean('disabled');
 			$table->boolean('deleted');
 			$table->timestamps();
