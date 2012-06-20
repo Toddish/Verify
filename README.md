@@ -9,11 +9,6 @@ Run these commands on the CLI:
     php artisan bundle:install verify  
     php artisan migrate verify
 
-Or, if you're not a fan of the CLI:
-
-1.  Copy the bundle files to your bundle directory
-2.  Import verify.sql into your database.
-
 You should now have all the tables imported, complete with a sample user, called **admin**, with a password of **password**.
 
 ### Registering the Bundle
