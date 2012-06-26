@@ -2,7 +2,7 @@
 
 namespace Verify\Models;
 
-class Role extends \Eloquent
+class Role extends EloquentVerifyBase
 {
 	
 	public static $accessible = array('name', 'description', 'level');
@@ -14,7 +14,7 @@ class Role extends \Eloquent
 
 	public function permissions()
 	{
-		return $this->has_many_and_belongs_to('Verify\Models\Permission');
+		return $this->has_many_and_belongs_to('Verify\Models\Permission', $this->prefix.'permission_role');
 	}
 
 }

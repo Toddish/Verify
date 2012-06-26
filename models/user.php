@@ -2,7 +2,7 @@
 
 namespace Verify\Models;
 
-class User extends \Eloquent
+class User extends EloquentVerifyBase
 {
 	
 	public static $accessible = array('username', 'password', 'salt', 'email', 'role_id', 'verified', 'deleted', 'disabled');
