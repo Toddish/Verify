@@ -2,6 +2,22 @@
 
 class Verify_Init {
 
+	public function __construct()
+	{
+		// Get the prefix
+		$prefix = Config::get('verify::verify.prefix');
+		$prefix = $prefix
+			? $prefix.'_'
+			: '';
+
+		// Set a constant here, 
+		// as we need the value in the closures
+		if (!defined('VERIFY_PREFIX'))
+		{
+			define('VERIFY_PREFIX', $prefix);
+		}
+	}
+
 	/**
 	 * Make changes to the database.
 	 *
@@ -9,7 +25,8 @@ class Verify_Init {
 	 */
 	public function up()
 	{
-		Schema::create('permissions', function($table)
+
+		Schema::create(VERIFY_PREFIX.'permissions', function($table)
 		{
 			$table->engine = 'InnoDB';
 
@@ -19,7 +36,7 @@ class Verify_Init {
 			$table->timestamps();
 		});
 
-		Schema::create('roles', function($table)
+		Schema::create(VERIFY_PREFIX.'roles', function($table)
 		{
 			$table->engine = 'InnoDB';
 
@@ -30,7 +47,7 @@ class Verify_Init {
 			$table->timestamps();
 		});
 
-		Schema::create('users', function($table)
+		Schema::create(VERIFY_PREFIX.'users', function($table)
 		{
 			$table->engine = 'InnoDB';
 
@@ -45,10 +62,10 @@ class Verify_Init {
 			$table->boolean('deleted');
 			$table->timestamps();
 
-			$table->foreign('role_id')->references('id')->on('roles');
+			$table->foreign('role_id')->references('id')->on(VERIFY_PREFIX.'roles');
 		});
 
-		Schema::create('permission_role', function($table)
+		Schema::create(VERIFY_PREFIX.'permission_role', function($table)
 		{
 			$table->engine = 'InnoDB';
 
@@ -57,16 +74,16 @@ class Verify_Init {
 			$table->integer('role_id');
 			$table->timestamps();
 
-			$table->foreign('permission_id')->references('id')->on('permissions');
-			$table->foreign('role_id')->references('id')->on('roles');
+			$table->foreign('permission_id')->references('id')->on(VERIFY_PREFIX.'permissions');
+			$table->foreign('role_id')->references('id')->on(VERIFY_PREFIX.'roles');
 		});
 
-		DB::table('roles')->insert(array(
+		DB::table(VERIFY_PREFIX.'roles')->insert(array(
 			'name'				=> Config::get('verify::verify.super_admin'),
 			'level'				=> 10
 		));
 
-		DB::table('users')->insert(array(
+		DB::table(VERIFY_PREFIX.'users')->insert(array(
 			'username'			=> 'admin',
 			'password'			=> '$2a$08$rqN6idpy0FwezH72fQcdqunbJp7GJVm8j94atsTOqCeuNvc3PzH3m',
 			'salt'				=> 'a227383075861e775d0af6281ea05a49',
@@ -83,10 +100,10 @@ class Verify_Init {
 	 */
 	public function down()
 	{
-		Schema::drop('permission_role');
-		Schema::drop('users');
-		Schema::drop('roles');
-		Schema::drop('permissions');
+		Schema::drop(VERIFY_PREFIX.'permission_role');
+		Schema::drop(VERIFY_PREFIX.'users');
+		Schema::drop(VERIFY_PREFIX.'roles');
+		Schema::drop(VERIFY_PREFIX.'permissions');
 	}
 
 }
