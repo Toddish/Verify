@@ -118,30 +118,15 @@ class Verify extends \Laravel\Auth\Drivers\Driver
 			return false;
 		}
 
-		$roles = !is_array($roles)
-			? array($roles)
-			: $roles;
-
-		$valid = FALSE;
-
-		foreach ($roles as $role)
-		{
-			if ($user->role->name === $role)
-			{
-				$valid = TRUE;
-				break;
-			}
-		}
-
-		return $valid;
+		return $user->is($roles);
 	}
 
 	/**
-	 * Can the user do something
+	 * Can the User do something
 	 * 
 	 * @param  array|string $permissions Single permission or an array or permissions
 	 * @param  object|integer|null  $user  Leave null for current logged in user, or pass a User ID/User object
-	 * @return boolean          [description]
+	 * @return boolean
 	 */
 	public function can($permissions, $user = NULL)
 	{
@@ -152,36 +137,11 @@ class Verify extends \Laravel\Auth\Drivers\Driver
 			return FALSE;
 		}
 
-		$permissions = !is_array($permissions)
-			? array($permissions)
-			: $permissions;
-
-		$to_check = $this->model();
-		$to_check = $user::with(array('role', 'role.permissions'))
-			->where('id', '=', $user->id)
-			->first();
-
-		// Are we a super admin?
-		if ($to_check->role->name === Config::get('verify::verify.super_admin'))
-		{
-			return TRUE;
-		}
-
-		$valid = FALSE;
-		foreach ($to_check->role->permissions as $permission)
-		{
-			if (in_array($permission->name, $permissions))
-			{
-				$valid = TRUE;
-				break;
-			}
-		}
-
-		return $valid;
+		return $user->can($permissions);
 	}
 
 	/**
-	 * Is the user a certain level
+	 * Is the User a certain Level
 	 * 
 	 * @param  integer $level
 	 * @param  string $modifier [description]
@@ -197,34 +157,7 @@ class Verify extends \Laravel\Auth\Drivers\Driver
 			return FALSE;
 		}
 
-		$user_level = $user->role->level;
-
-		switch ($modifier)
-		{
-			case '=':
-				return $user_level = $level;
-				break;
-
-			case '>=':
-				return $user_level >= $level;
-				break;
-
-			case '>':
-				return $user_level > $level;
-				break;
-
-			case '<=':
-				return $user_level <= $level;
-				break;
-
-			case '<':
-				return $user_level < $level;
-				break;
-
-			default:
-				return false;
-				break;
-		}
+		return $user->level($level, $modifier);
 	}
 
 	/**

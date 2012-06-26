@@ -26,4 +26,107 @@ class User extends EloquentVerifyBase
 		$this->set_attribute('salt', $salt);
 	}
 
+	/**
+	 * Can the User do something
+	 * 
+	 * @param  array|string $permissions Single permission or an array or permissions
+	 * @return boolean
+	 */
+	public function can($permissions)
+	{
+		$permissions = !is_array($permissions)
+			? array($permissions)
+			: $permissions;
+
+		$class = get_class();
+		$to_check = new $class;
+
+		$to_check = $class::with(array('role', 'role.permissions'))
+			->where('id', '=', $this->get_attribute('id'))
+			->first();
+
+		// Are we a super admin?
+		if ($to_check->role->name === \Config::get('verify::verify.super_admin'))
+		{
+			return TRUE;
+		}
+
+		$valid = FALSE;
+		foreach ($to_check->role->permissions as $permission)
+		{
+			if (in_array($permission->name, $permissions))
+			{
+				$valid = TRUE;
+				break;
+			}
+		}
+
+		return $valid;
+	}
+
+	/**
+	 * Is the User a Role
+	 * 
+	 * @param  array|string  $roles A single role or an array of roles
+	 * @return boolean
+	 */
+	public function is($roles)
+	{
+		$roles = !is_array($roles)
+			? array($roles)
+			: $roles;
+
+		$valid = FALSE;
+
+		foreach ($roles as $role)
+		{
+			if ($this->role->name === $role)
+			{
+				$valid = TRUE;
+				break;
+			}
+		}
+
+		return $valid;
+	}
+
+	/**
+	 * Is the User a certain Level
+	 * 
+	 * @param  integer $level
+	 * @param  string $modifier [description]
+	 * @return boolean
+	 */
+	public function level($level, $modifier = '>=')
+	{
+		$user_level = $this->role->level;
+
+		switch ($modifier)
+		{
+			case '=':
+				return $user_level = $level;
+				break;
+
+			case '>=':
+				return $user_level >= $level;
+				break;
+
+			case '>':
+				return $user_level > $level;
+				break;
+
+			case '<=':
+				return $user_level <= $level;
+				break;
+
+			case '<':
+				return $user_level < $level;
+				break;
+
+			default:
+				return false;
+				break;
+		}
+	}
+
 }
