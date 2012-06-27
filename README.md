@@ -7,6 +7,8 @@
 +  Exceptions for intelligent handling of errors
 +  Configurable/extendable
 
+**NOTE:** Full docs will be available soon(ish) from my portfolio.
+
 ## Installation
 
 Run these commands on the CLI:
