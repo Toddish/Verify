@@ -14,6 +14,6 @@ return array(
 
 	// DB prefix for tables
 	// NO '_' NECESSARY, e.g. use 'verify' for 'verify_users'
-	'prefix'				=> 'verify'
+	'prefix'				=> ''
 
 );

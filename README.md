@@ -1,6 +1,11 @@
-# Laravel Verify Bundle
+# # Laravel Verify Bundle
 
 *A simple role/permission authentication bundle for Laravel*
+
++  Secure password storage with salt
++  Role/permission based authentication
++  Exceptions for intelligent handling of errors
++  Configurable/extendable
 
 ## Installation
 
@@ -16,8 +21,8 @@ You should now have all the tables imported, complete with a sample user, called
 Place the following code in ``application/bundles.php``:
 
 
-    'verify'	=> array(
-	    auto		=> true
+    'verify'    => array(
+        auto        => true
     )
 
 
@@ -49,15 +54,57 @@ They are added via the ORM, too:
 
 More information on relationships can be found in the [Laravel Eloquent docs](http://laravel.com/docs/database/eloquent).
 
-
 ### Public Functions
 
-#### retrieve($user_id):object|null  
+#### User Model
+
+The main functions are supposed to be used with a User object.
+
+    $user = Auth::retrieve($user_id);
+  
+    // Roles
+    $user->is('Super Admin'); // Does the user have the role 'Super Admin'  
+    $user->is(array('Super Admin', 'Admin')); // Does the user have the role 'Super Admin' OR 'Admin'
+  
+    // Permissions
+    $user->can('delete_users'); // Does the user have the permission 'delete_users'
+    $user->can(array('delete_users', 'create_users')); // Does the user have the permission 'delete_users' OR 'create_users'
+  
+    // Levels
+    $user->level(7); // Is the user a level 7 or above?
+    $user->level(5, '<='); // Is the user a level 5 or below
+    // All the standard operators are valid (<, <=, =, >=, >)
+
+**NOTE:** Salts are automatically applied when setting a password:
+
+    $user->password = 'password'; // Salt will automatically be generated and applied to the user
+
+
+#### Verify Library
+
+The Verify library has the same permission functions as the User model, the only difference being it tests the logged in user by default, or you can pass a user in as a parameter.
+
+    // Roles
+    Auth::is(array('Super Admin', 'Admin');
+    Auth::is('Admin', $different_user);
+
+    // Permissions
+    Auth::can(array('create_users', 'delete_users');
+    Auth::can('create_users', $different_user);
+
+    // Levels
+    Auth::level(7);
+    Auth::level(5, '<');
+    Auth::level(9, '<=', $different_user);
+
+It also has these public functions, like the normal Auth driver.
+
+##### retrieve($user_id):object|null  
 *Retrieves a user via their ID*
 
     $user = Auth::retrieve($user_id);
 
-#### attempt($arguments = array()):boolean  
+##### attempt($arguments = array()):boolean  
 *Attempts to log in a user*
 
     $ok = Auth::attempt(array(
@@ -72,34 +119,6 @@ The only real difference between this and the normal ```attempt``` Auth method, 
 *UserUnverifiedException* - User isn't verified  
 *UserDisabledException* - User has been disabled  
 *UserDeletedException* - User has been deleted
-
-#### is($roles, $user = NULL):boolean
-*Checks if a user is a certain role*
-
-    $ok = Auth::is(array('Super Admin', 'Admin');
-    $ok = Auth::is('Admin', $different_user);
-
-If no user is passed, the currently logged in user is tested against.  
-If an array of Role names are a passed, the function returns true if **any one** of them is valid.
-
-#### can($permissions, $user = NULL):boolean
-*Checks if a user has a certain permission*
-
-    $ok = Auth::can(array('create_users', 'delete_users');
-    $ok = Auth::can('create_users', $different_user);
-
-If no user is passed, the currently logged in user is tested against.  
-If an array of Permission names are a passed, the function returns true if **any one** of them is valid.  
-If the user being tested against is a ```'Super Admin'```, as defined in the config below, this method will always return true.
-
-#### level($level, $modifier = '>=', $user = NULL):boolean
-*Checks if a user is a certain level*
-
-    $ok = Auth::level(7); // Is the User level 7 or above
-    $ok = Auth::level(5, '<'); // Is the User below level 5
-    $ok = Auth::level(9, '<=', $different_user);
-
-If no user is passed, the currently logged in user is tested against.
 
 ### Configuration
 
@@ -121,3 +140,7 @@ A separate config file is provided to keep configuration separate from other Aut
 
     'Super Admin'
 
+#### prefix
+*The prefix to use for the database tables. e.g 'verify' for 'verify_users'*
+
+    ''
