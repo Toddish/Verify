@@ -56,7 +56,7 @@ class Verify_Init {
 			$table->string('password', 60)->index();
 			$table->string('salt', 32);
 			$table->string('email', 255)->index();
-			$table->integer('role_id')->index();
+			$table->integer('role_id')->unsigned()->index();
 			$table->boolean('verified');
 			$table->boolean('disabled');
 			$table->boolean('deleted');
@@ -70,8 +70,8 @@ class Verify_Init {
 			$table->engine = 'InnoDB';
 
 			$table->increments('id');
-			$table->integer('permission_id');
-			$table->integer('role_id');
+			$table->integer('permission_id')->unsigned()->index();
+			$table->integer('role_id')->unsigned()->index();
 			$table->timestamps();
 
 			$table->foreign('permission_id')->references('id')->on(VERIFY_PREFIX.'permissions');
