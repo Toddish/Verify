@@ -1,5 +1,14 @@
 # Changelog
 
+## v 2.0.1
++ Fixed migration issue (#5)
+
+### Upgrade instructions
+Back up your config, update the bundle.
+
+### Credits
+A **massive** thanks to [dshoreman](https://github.com/dshoreman) for fixing #5!
+
 ## v 2.0.0
 + Added DB prefix (#3)
 + Moved permission/role logic to User model
