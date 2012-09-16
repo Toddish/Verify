@@ -6,7 +6,8 @@ class User extends EloquentVerifyBase
 {
 	
 	public static $accessible = array('username', 'password', 'salt', 'email', 'role_id', 'verified', 'deleted', 'disabled');
-
+	public static $to_check_cache;
+	
 	public function role()
 	{
 		return $this->belongs_to('Verify\Models\Role');
@@ -39,11 +40,21 @@ class User extends EloquentVerifyBase
 			: $permissions;
 
 		$class = get_class();
-		$to_check = new $class;
+		
+		if(empty($this->to_check_cache))
+		{
+			$to_check = new $class;
 
-		$to_check = $class::with(array('role', 'role.permissions'))
-			->where('id', '=', $this->get_attribute('id'))
-			->first();
+			$to_check = $class::with(array('role', 'role.permissions'))
+				->where('id', '=', $this->get_attribute('id'))
+				->first();
+
+			$this->to_check_cache = $to_check;
+		}
+		else
+		{
+			$to_check = $this->to_check_cache;
+		}
 
 		// Are we a super admin?
 		if ($to_check->role->name === \Config::get('verify::verify.super_admin'))
