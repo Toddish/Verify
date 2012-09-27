@@ -1,5 +1,19 @@
 # Changelog
 
+## v 2.0.3
++ Updated the changelog
+
+## v 2.0.2
++ Added cache system for can method (#10)
++ Updated readme to avoid confusion when migrating the bundle (#11, #12)
+
+### Upgrade instructions
+Back up your config, update the bundle
+
+### Credits
+[bllim](https://github.com/bllim) for #10
+[dshoreman](https://github.com/dshoreman) for #12
+
 ## v 2.0.1
 + Fixed migration issue (#5)
 
