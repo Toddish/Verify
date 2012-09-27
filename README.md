@@ -11,10 +11,9 @@
 
 ## Installation
 
-Run these commands on the CLI:
+Run this command on the CLI:
 
     php artisan bundle:install verify  
-    php artisan migrate verify
 
 You should now have all the tables imported, complete with a sample user, called **admin**, with a password of **password**.
 
@@ -31,6 +30,10 @@ Place the following code in ``application/bundles.php``:
 Then change your Auth driver to ``'verify'`` in ``application/config/auth.php``:
 
     'driver' => 'verify',
+
+Now migrate the resources for Verify:
+
+    php artisan migrate verify
 
 ## Usage
 
