@@ -52,7 +52,7 @@ class Verify extends \Laravel\Auth\Drivers\Driver
 		foreach ($usernames as $identify_by)
 		{
 			$user = $this->model()
-				->where($identify_by, '=', array_get($arguments, 'username'))
+				->where($identify_by, '=', array_get($arguments, $identify_by))
 				->first();
 			
 			if (
