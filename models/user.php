@@ -115,7 +115,7 @@ class User extends EloquentVerifyBase
 		switch ($modifier)
 		{
 			case '=':
-				return $user_level = $level;
+				return $user_level == $level;
 				break;
 
 			case '>=':
