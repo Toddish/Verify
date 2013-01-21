@@ -55,11 +55,14 @@ class Verify extends \Laravel\Auth\Drivers\Driver
 				->where($identify_by, '=', array_get($arguments, $identify_by))
 				->first();
 			
-			if (
-				!is_null($user) &&
-				Hash::check($user->salt . array_get($arguments, 'password'), $user->password)
-			)
+			if (!is_null($user))
 			{
+				// Is user password is valid?
+		                if(!Hash::check($user->salt . array_get($arguments, 'password'), $user->password))
+		                {
+		                    throw new UserPasswordIncorrectException('User password is incorrect');
+		                }
+                
 				// Valid user, but are they verified?
 				if (!$user->verified)
 				{
@@ -199,3 +202,4 @@ class UserNotFoundException extends Exception {};
 class UserUnverifiedException extends Exception {};
 class UserDisabledException extends Exception {};
 class UserDeletedException extends Exception {};
+class UserPasswordIncorrectException extends Exception {};
