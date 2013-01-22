@@ -1,19 +1,23 @@
-# # Laravel Verify Bundle
+# Laravel Verify Bundle
 
-*A simple role/permission authentication bundle for Laravel*
+---
 
-+  Secure password storage with salt
-+  Role/permission based authentication
-+  Exceptions for intelligent handling of errors
-+  Configurable/extendable
+A simple role/permission authentication bundle for Laravel
 
-**NOTE:** Full docs will be available soon(ish) from my portfolio.
+---
+
+* Secure password storage with salt
+* Role/permission based authentication
+* Exceptions for intelligent handling of errors
+* Configurable/extendable
+
+---
 
 ## Installation
 
 Run this command on the CLI:
 
-    php artisan bundle:install verify  
+    php artisan bundle:install verify
 
 ### Registering the Bundle
 
@@ -39,113 +43,69 @@ You should now have all the tables imported, complete with a sample user, called
 
 The bundle is intentionally lightweight. You add Users, Roles and Permissions like any other Model.
 
-    $user = Verify\Models\User::create(array(...));
-    $role = Verify\Models\User::create(array(...));
+```php
+$user = new Verify\Models\User;
+$role = new Verify\Models\Role;
+$permission = new Verify\Models\Permission;
+```
 
-etc. 
+etc.
 
 **All models are in the namespace 'Verify\Models\'.**
 
 The relationships are as follows:
 
-+  Roles have many Users
-+  A User belongs to a Role
-+  Roles have many and belongs to Permissions
-+  Permissions have many and belongs to Roles
+* Roles have many Users
+* A User belongs to a Role
+* Roles have many and belongs to Permissions
+* Permissions have many and belongs to Roles
 
-They are added via the ORM, too:
+Relationships are handled via the ORM, too:
 
-    $role->permissions->sync(array($permission->id));
+'''php
+$role->permissions()->sync(array($permission->id));
+```
 
 More information on relationships can be found in the [Laravel Eloquent docs](http://laravel.com/docs/database/eloquent).
 
-### Public Functions
+## Basic Examples
 
-#### User Model
+```php
+// Create a new Permission
+$permission = new \Verify\Models\Permission;
+$permission->name = 'delete_user';
+$permission->save();
 
-The main functions are supposed to be used with a User object.
+// Create a new Role
+$role = new Verify\Models\Role;
+$role->name = 'Moderator';
+$role->level = 7;
+$role->save();
 
-    $user = Auth::retrieve($user_id);
-  
-    // Roles
-    $user->is('Super Admin'); // Does the user have the role 'Super Admin'  
-    $user->is(array('Super Admin', 'Admin')); // Does the user have the role 'Super Admin' OR 'Admin'
-  
-    // Permissions
-    $user->can('delete_users'); // Does the user have the permission 'delete_users'
-    $user->can(array('delete_users', 'create_users')); // Does the user have the permission 'delete_users' OR 'create_users'
-  
-    // Levels
-    $user->level(7); // Is the user a level 7 or above?
-    $user->level(5, '<='); // Is the user a level 5 or below
-    // All the standard operators are valid (<, <=, =, >=, >)
+// Assign the Permission to the Role
+$role->permissions()->sync(array($permission->id));
 
-**NOTE:** Salts are automatically applied when setting a password:
+// Create a new User
+$user = new \Verify\Models\User;
+$user->username = 'Todd';
+$user->email = 'todd@toddish.co.uk';
+$user->password = 'password'; // This is automatically salted and encrypted
+$user->role_id = $role->id;
+$user->save();
 
-    $user->password = 'password'; // Salt will automatically be generated and applied to the user
+// Using the public methods available on the User object
+var_dump($user->is('Moderator')); // true
+var_dump($user->is('Admin')); // false
 
+var_dump($user->can('delete_user')); // true
+var_dump($user->can('add_user')); // false
 
-#### Verify Library
+var_dump($user->level(7)); // true
+var_dump($user->level(5, '&lt;=')); // false
+```
 
-The Verify library has the same permission functions as the User model, the only difference being it tests the logged in user by default, or you can pass a user in as a parameter.
+---
 
-    // Roles
-    Auth::is(array('Super Admin', 'Admin');
-    Auth::is('Admin', $different_user);
+## Documentation
 
-    // Permissions
-    Auth::can(array('create_users', 'delete_users');
-    Auth::can('create_users', $different_user);
-
-    // Levels
-    Auth::level(7);
-    Auth::level(5, '<');
-    Auth::level(9, '<=', $different_user);
-
-It also has these public functions, like the normal Auth driver.
-
-##### retrieve($user_id):object|null  
-*Retrieves a user via their ID*
-
-    $user = Auth::retrieve($user_id);
-
-##### attempt($arguments = array()):boolean  
-*Attempts to log in a user*
-
-    $ok = Auth::attempt(array(
-        'username' => 'Todd',
-        'password' => 'password',
-        'remember' => true
-    ));
-
-The only real difference between this and the normal ```attempt``` Auth method, is it throws an exception on error:
-
-*UserNotFoundException* - User can't be found  
-*UserUnverifiedException* - User isn't verified  
-*UserDisabledException* - User has been disabled  
-*UserDeletedException* - User has been deleted
-
-### Configuration
-
-A separate config file is provided to keep configuration separate from other Auth libraries.
-
-
-#### username
-*A string or array of the database columns to authenticate against*  
-
-    array('username', 'email')
-
-#### user_model
-*The model to use for a User*  
-
-    'Verify\Models\User'
-
-#### super_admin
-*The name of the super admin, who returns true on all permission checks*
-
-    'Super Admin'
-
-#### prefix
-*The prefix to use for the database tables. e.g 'verify' for 'verify_users'*
-
-    ''
+For full documentation, have a look at [http://docs.toddish.co.uk/verify](http://docs.toddish.co.uk/verify).

@@ -1,5 +1,17 @@
 # Changelog
 
+## v 2.1.0
++ Fixed identity column check (#15)
++ Fixed level check with '=' modifier (#16)
++ Added new Exception (#18)
++ Updated Readme.md to reflect new docs site
+
+### Upgrade instructions
+Back up your config, update the bundle.
+
+### Credits
+A **huge** thanks to [edvinaskrucas](https://github.com/edvinaskrucas) for all the pull requests (#15, #16 and #18)!
+
 ## v 2.0.3
 + Updated the changelog
 
