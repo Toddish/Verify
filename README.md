@@ -62,9 +62,7 @@ The relationships are as follows:
 
 Relationships are handled via the ORM, too:
 
-'''php
-$role->permissions()->sync(array($permission->id));
-```
+    $role->permissions()->sync(array($permission->id));
 
 More information on relationships can be found in the [Laravel Eloquent docs](http://laravel.com/docs/database/eloquent).
 

@@ -1,5 +1,8 @@
 # Changelog
 
+# v 2.1.1
++ Fixed README.md code highlighting
+
 ## v 2.1.0
 + Fixed identity column check (#15)
 + Fixed level check with '=' modifier (#16)
