@@ -1,5 +1,8 @@
 # Changelog
 
+# v 2.1.2
++ Added a license
+
 # v 2.1.1
 + Fixed README.md code highlighting
 
