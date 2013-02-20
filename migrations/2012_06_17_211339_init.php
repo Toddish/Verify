@@ -42,7 +42,7 @@ class Verify_Init {
 
 			$table->increments('id');
 			$table->string('name', 100)->index();
-			$table->string('description', 255);
+			$table->string('description', 255)->nullable();
 			$table->integer('level');
 			$table->timestamps();
 		});
