@@ -10,7 +10,7 @@ class Verify_Init {
 			? $prefix.'_'
 			: '';
 
-		// Set a constant here, 
+		// Set a constant here,
 		// as we need the value in the closures
 		if (!defined('VERIFY_PREFIX'))
 		{
@@ -80,7 +80,9 @@ class Verify_Init {
 
 		DB::table(VERIFY_PREFIX.'roles')->insert(array(
 			'name'				=> Config::get('verify::verify.super_admin'),
-			'level'				=> 10
+			'level'				=> 10,
+			'created_at'        => date('Y-m-d H:i:s'),
+			'updated_at'        => date('Y-m-d H:i:s')
 		));
 
 		DB::table(VERIFY_PREFIX.'users')->insert(array(
@@ -89,7 +91,11 @@ class Verify_Init {
 			'salt'				=> 'a227383075861e775d0af6281ea05a49',
 			'role_id'			=> 1,
 			'email' 			=> 'example@gmail.com',
-			'created_at'		=> date('Y-m-d H:i:s')
+			'created_at'		=> date('Y-m-d H:i:s'),
+			'updated_at'        => date('Y-m-d H:i:s'),
+			'verified'			=> 1,
+			'disabled'			=> 0,
+			'deleted'			=> 0
 		));
 	}
 
