@@ -1,9 +1,15 @@
 # Changelog
 
-# v 2.1.2
+## v 2.1.3
++ Fixed #19 & #20
+
+### Credits
+Thanks to [allartk](https://github.com/allartk) for raising the issues!
+
+## v 2.1.2
 + Added a license
 
-# v 2.1.1
+## v 2.1.1
 + Fixed README.md code highlighting
 
 ## v 2.1.0
