@@ -4,18 +4,23 @@ namespace Verify\Models;
 
 class User extends EloquentVerifyBase
 {
-	
+
 	public static $accessible = array('username', 'password', 'salt', 'email', 'role_id', 'verified', 'deleted', 'disabled');
-	public static $to_check_cache;
-	
-	public function role()
+	public static $cache_can;
+
+	/**
+	 * Role
+	 *
+	 * @return object
+	 */
+	public function roles()
 	{
-		return $this->belongs_to('Verify\Models\Role');
+		return $this->has_many_and_belongs_to('Verify\Models\Role', $this->prefix.'role_user');
 	}
 
 	/**
 	 * Salts and saves the password
-	 * 
+	 *
 	 * @param string $password
 	 */
 	public function set_password($password)
@@ -29,7 +34,7 @@ class User extends EloquentVerifyBase
 
 	/**
 	 * Can the User do something
-	 * 
+	 *
 	 * @param  array|string $permissions Single permission or an array or permissions
 	 * @return boolean
 	 */
@@ -40,8 +45,8 @@ class User extends EloquentVerifyBase
 			: $permissions;
 
 		$class = get_class();
-		
-		if(empty($this->to_check_cache))
+
+		if(empty($this->cache_can))
 		{
 			$to_check = new $class;
 
@@ -49,11 +54,11 @@ class User extends EloquentVerifyBase
 				->where('id', '=', $this->get_attribute('id'))
 				->first();
 
-			$this->to_check_cache = $to_check;
+			$this->cache_can = $to_check;
 		}
 		else
 		{
-			$to_check = $this->to_check_cache;
+			$to_check = $this->cache_can;
 		}
 
 		// Are we a super admin?
@@ -77,7 +82,7 @@ class User extends EloquentVerifyBase
 
 	/**
 	 * Is the User a Role
-	 * 
+	 *
 	 * @param  array|string  $roles A single role or an array of roles
 	 * @return boolean
 	 */
@@ -87,11 +92,27 @@ class User extends EloquentVerifyBase
 			? array($roles)
 			: $roles;
 
-		$valid = FALSE;
+		$class = get_class();
 
-		foreach ($roles as $role)
+		if(empty($this->cache_is))
 		{
-			if ($this->role->name === $role)
+			$to_check = new $class;
+
+			$to_check = $class::with(array('roles'))
+				->where('id', '=', $this->get_attribute('id'))
+				->first();
+
+			$this->cache_is = $to_check;
+		}
+		else
+		{
+			$to_check = $this->cache_is;
+		}
+
+		$valid = FALSE;
+		foreach ($to_check->roles as $role)
+		{
+			if (in_array($role->name, $roles))
 			{
 				$valid = TRUE;
 				break;
@@ -103,7 +124,7 @@ class User extends EloquentVerifyBase
 
 	/**
 	 * Is the User a certain Level
-	 * 
+	 *
 	 * @param  integer $level
 	 * @param  string $modifier [description]
 	 * @return boolean
