@@ -6,7 +6,7 @@ class User extends EloquentVerifyBase
 {
 
 	public static $accessible = array('username', 'password', 'salt', 'email', 'role_id', 'verified', 'deleted', 'disabled');
-	public static $cache_can;
+	public static $to_check_cache;
 
 	/**
 	 * Role
@@ -46,34 +46,40 @@ class User extends EloquentVerifyBase
 
 		$class = get_class();
 
-		if(empty($this->cache_can))
+		if(empty($this->to_check_cache))
 		{
 			$to_check = new $class;
 
-			$to_check = $class::with(array('role', 'role.permissions'))
+			$to_check = $class::with(array('roles', 'roles.permissions'))
 				->where('id', '=', $this->get_attribute('id'))
 				->first();
 
-			$this->cache_can = $to_check;
+			$this->to_check_cache = $to_check;
 		}
 		else
 		{
-			$to_check = $this->cache_can;
+			$to_check = $this->to_check_cache;
 		}
 
 		// Are we a super admin?
-		if ($to_check->role->name === \Config::get('verify::verify.super_admin'))
+		foreach ($to_check->roles as $role)
 		{
-			return TRUE;
+			if ($role->name === \Config::get('verify::verify.super_admin'))
+			{
+				return TRUE;
+			}
 		}
 
 		$valid = FALSE;
-		foreach ($to_check->role->permissions as $permission)
+		foreach ($to_check->roles as $role)
 		{
-			if (in_array($permission->name, $permissions))
+			foreach ($role->permissions as $permission)
 			{
-				$valid = TRUE;
-				break;
+				if (in_array($permission->name, $permissions))
+				{
+					$valid = TRUE;
+					break 2;
+				}
 			}
 		}
 
@@ -94,19 +100,19 @@ class User extends EloquentVerifyBase
 
 		$class = get_class();
 
-		if(empty($this->cache_is))
+		if(empty($this->to_check_cache))
 		{
 			$to_check = new $class;
 
-			$to_check = $class::with(array('roles'))
+			$to_check = $class::with(array('roles', 'roles.permssions'))
 				->where('id', '=', $this->get_attribute('id'))
 				->first();
 
-			$this->cache_is = $to_check;
+			$this->to_check_cache = $to_check;
 		}
 		else
 		{
-			$to_check = $this->cache_is;
+			$to_check = $this->to_check_cache;
 		}
 
 		$valid = FALSE;
