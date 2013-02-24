@@ -5,7 +5,18 @@ namespace Verify\Models;
 class User extends EloquentVerifyBase
 {
 
+	/**
+	 * Accessible
+	 *
+	 * @var array
+	 */
 	public static $accessible = array('username', 'password', 'salt', 'email', 'role_id', 'verified', 'deleted', 'disabled');
+
+	/**
+	 * To check cache
+	 *
+	 * @var object
+	 */
 	public static $to_check_cache;
 
 	/**
@@ -44,22 +55,7 @@ class User extends EloquentVerifyBase
 			? array($permissions)
 			: $permissions;
 
-		$class = get_class();
-
-		if(empty($this->to_check_cache))
-		{
-			$to_check = new $class;
-
-			$to_check = $class::with(array('roles', 'roles.permissions'))
-				->where('id', '=', $this->get_attribute('id'))
-				->first();
-
-			$this->to_check_cache = $to_check;
-		}
-		else
-		{
-			$to_check = $this->to_check_cache;
-		}
+		$to_check = $this->get_to_check();
 
 		// Are we a super admin?
 		foreach ($to_check->roles as $role)
@@ -98,22 +94,7 @@ class User extends EloquentVerifyBase
 			? array($roles)
 			: $roles;
 
-		$class = get_class();
-
-		if(empty($this->to_check_cache))
-		{
-			$to_check = new $class;
-
-			$to_check = $class::with(array('roles', 'roles.permssions'))
-				->where('id', '=', $this->get_attribute('id'))
-				->first();
-
-			$this->to_check_cache = $to_check;
-		}
-		else
-		{
-			$to_check = $this->to_check_cache;
-		}
+		$to_check = $this->get_to_check();
 
 		$valid = FALSE;
 		foreach ($to_check->roles as $role)
@@ -137,34 +118,78 @@ class User extends EloquentVerifyBase
 	 */
 	public function level($level, $modifier = '>=')
 	{
-		$user_level = $this->role->level;
+		$to_check = $this->get_to_check();
+
+		$max = -1;
+		$min = 100;
+		$levels = array();
+
+		foreach ($to_check->roles as $role)
+		{
+			$max = $role->level > $max
+				? $role->level
+				: $max;
+
+			$min = $role->level < $min
+				? $role->level
+				: $min;
+
+			$levels[] = $role->level;
+		}
 
 		switch ($modifier)
 		{
 			case '=':
-				return $user_level == $level;
+				return in_array($level, $levels);
 				break;
 
 			case '>=':
-				return $user_level >= $level;
+				return $max >= $level;
 				break;
 
 			case '>':
-				return $user_level > $level;
+				return $max > $level;
 				break;
 
 			case '<=':
-				return $user_level <= $level;
+				return $min <= $level;
 				break;
 
 			case '<':
-				return $user_level < $level;
+				return $min < $level;
 				break;
 
 			default:
 				return false;
 				break;
 		}
+	}
+
+	/**
+	 * Get to check
+	 *
+	 * @return object
+	 */
+	private function get_to_check()
+	{
+		$class = get_class();
+
+		if(empty($this->to_check_cache))
+		{
+			$to_check = new $class;
+
+			$to_check = $class::with(array('roles', 'roles.permissions'))
+				->where('id', '=', $this->get_attribute('id'))
+				->first();
+
+			$this->to_check_cache = $to_check;
+		}
+		else
+		{
+			$to_check = $this->to_check_cache;
+		}
+
+		return $to_check;
 	}
 
 }

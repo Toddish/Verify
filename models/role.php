@@ -5,6 +5,11 @@ namespace Verify\Models;
 class Role extends EloquentVerifyBase
 {
 
+	/**
+	 * Accessible
+	 *
+	 * @var array
+	 */
 	public static $accessible = array('name', 'description', 'level');
 
 	/**

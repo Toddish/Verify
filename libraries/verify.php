@@ -9,6 +9,9 @@
 class Verify extends \Laravel\Auth\Drivers\Driver
 {
 
+	/**
+	 * __construct
+	 */
 	public function __construct()
 	{
 		parent::__construct();
@@ -54,7 +57,7 @@ class Verify extends \Laravel\Auth\Drivers\Driver
 			$user = $this->model()
 				->where($identify_by, '=', array_get($arguments, $identify_by))
 				->first();
-			
+
 			if (!is_null($user))
 			{
 				// Is user password is valid?
@@ -62,7 +65,7 @@ class Verify extends \Laravel\Auth\Drivers\Driver
 		                {
 		                    throw new UserPasswordIncorrectException('User password is incorrect');
 		                }
-                
+
 				// Valid user, but are they verified?
 				if (!$user->verified)
 				{
@@ -110,7 +113,7 @@ class Verify extends \Laravel\Auth\Drivers\Driver
 
 	/**
 	 * Is the User a Role
-	 * 
+	 *
 	 * @param  array|string  $roles A single role or an array of roles
 	 * @param  object|integer|null  $user  Leave null for current logged in user, or pass a User ID/User object
 	 * @return boolean
@@ -129,7 +132,7 @@ class Verify extends \Laravel\Auth\Drivers\Driver
 
 	/**
 	 * Can the User do something
-	 * 
+	 *
 	 * @param  array|string $permissions Single permission or an array or permissions
 	 * @param  object|integer|null  $user  Leave null for current logged in user, or pass a User ID/User object
 	 * @return boolean
@@ -148,7 +151,7 @@ class Verify extends \Laravel\Auth\Drivers\Driver
 
 	/**
 	 * Is the User a certain Level
-	 * 
+	 *
 	 * @param  integer $level
 	 * @param  string $modifier [description]
 	 * @param  object|integer|null  $user  Leave null for current logged in user, or pass a User ID/User object
@@ -168,7 +171,7 @@ class Verify extends \Laravel\Auth\Drivers\Driver
 
 	/**
 	 * Get a user
-	 * 
+	 *
 	 * @param  object|integer|null  $user  Leave null for current logged in user, or pass a User ID/User object
 	 * @return object|null
 	 */

@@ -5,6 +5,11 @@ namespace Verify\Models;
 class Permission extends EloquentVerifyBase
 {
 
+	/**
+	 * Accessible
+	 *
+	 * @var array
+	 */
 	public static $accessible = array('name', 'description');
 
 	/**
