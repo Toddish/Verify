@@ -55,10 +55,10 @@ etc.
 
 The relationships are as follows:
 
-* Roles have many Users
-* A User belongs to a Role
-* Roles have many and belongs to Permissions
-* Permissions have many and belongs to Roles
+* Roles have many and belong to Users
+* Users have many and belgon to Roles
+* Roles have many and belong to Permissions
+* Permissions have many and belong to Roles
 
 Relationships are handled via the ORM, too:
 
@@ -88,8 +88,10 @@ $user = new \Verify\Models\User;
 $user->username = 'Todd';
 $user->email = 'todd@toddish.co.uk';
 $user->password = 'password'; // This is automatically salted and encrypted
-$user->role_id = $role->id;
 $user->save();
+
+// Assign the Role to the User
+$user->roles()->sync(array($role->id));
 
 // Using the public methods available on the User object
 var_dump($user->is('Moderator')); // true
