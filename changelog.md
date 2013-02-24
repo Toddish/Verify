@@ -6,7 +6,7 @@
 ### Upgrade instructions
 
 Back up your config, update and migrate the bundle.
-Migrating will transfer your roles across, but it *will break your code*! You'll need to reflect the new relationship when assigning a Role to a User. See [the docs](http://docs.toddish.co.uk/verify#basic-usage) for more information.
+Migrating will transfer your roles across, but it **will break your code**! You'll need to reflect the new relationship when assigning a Role to a User. See [the docs](http://docs.toddish.co.uk/verify#basic-usage) for more information.
 
 ## v 2.1.3
 + Fixed #19 & #20
