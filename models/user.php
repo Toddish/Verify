@@ -99,7 +99,8 @@ class User extends EloquentVerifyBase
 		$valid = FALSE;
 		foreach ($to_check->roles as $role)
 		{
-			if (in_array($role->name, $roles))
+			// Is the role in array, or is user Super Admin
+			if (in_array($role->name, $roles) || $role->name == \Config::get('verify::verify.super_admin'))
 			{
 				$valid = TRUE;
 				break;
