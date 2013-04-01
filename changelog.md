@@ -1,5 +1,11 @@
 # Changelog
 
+## v 3.0.1
++ Removed dependency on id column
+
+### Credits
+Thanks to [AoSiX](https://github.com/AoSiX) for rasing the issue and submitting a pull request.
+
 ## v 3.0.0
 + Changed user/role relationship to many-to-many
 

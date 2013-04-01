@@ -4,7 +4,7 @@
  * Verification Library
  *
  * @author Todd Francis
- * @version 3.0.0
+ * @version 3.0.1
  */
 class Verify extends \Laravel\Auth\Drivers\Driver
 {
