@@ -91,7 +91,7 @@ class Verify extends \Laravel\Auth\Drivers\Driver
 
 		if ($valid)
 		{
-			return $this->login($user->id, array_get($arguments, 'remember'));
+			return $this->login($user->get_key(), array_get($arguments, 'remember'));
 		}
 		else
 		{
