@@ -175,7 +175,7 @@ class User extends EloquentVerifyBase
 	{
 		$class = get_class();
 
-		if(empty($this->to_check_cache))
+		if(empty(static::$to_check_cache))
 		{
 			$to_check = new $class;
 
@@ -183,11 +183,11 @@ class User extends EloquentVerifyBase
 				->where('id', '=', $this->get_attribute('id'))
 				->first();
 
-			$this->to_check_cache = $to_check;
+			static::$to_check_cache = $to_check;
 		}
 		else
 		{
-			$to_check = $this->to_check_cache;
+			$to_check = static::$to_check_cache;
 		}
 
 		return $to_check;
